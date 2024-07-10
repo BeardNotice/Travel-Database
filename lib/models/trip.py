@@ -162,8 +162,30 @@ class Trip:
         """return a trip object corresponding to first table row matching specified name"""
         sql = """
             SELECT *
-            FROM departments
-         WHERE name is ?
+            FROM trips
+         WHERE name = ?
         """
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
+    
+    @classmethod
+    def find_by_location(cls, location):
+        """return a list of trip objects corresponding to table rows matching specified location"""
+        sql = """
+            SELECT *
+            FROM trips
+            WHERE location = ?
+        """
+        rows = CURSOR.execute(sql, (location,)).fetchall()
+        return [cls.instance_from_db(row) for row in rows]
+    
+    def activities(self):
+        """return a list of activities associated with current trip"""
+        from models.activity import Activity
+        sql = """
+            SELECT * FROM activities
+            WHERE trip_id = ?
+        """
+        CURSOR.execute(sql, (self.id,),)
+        rows = CURSOR.fetchall()
+        return [Activity.instance_from_db(row) for row in rows]
