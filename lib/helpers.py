@@ -75,13 +75,75 @@ def find_activity_by_name():
         print(f'{name} was not found.')
 
 def find_activity_by_category():
-    pass
+    category = input("Enter the activity's category: ")
+    activities = Activity.find_by_category(category)
+    if activities:
+        for activity in activities:
+            print(f'--"{activity.name}" ({activity.category})\n--Cost: {activity.cost} {activity.currency}\n--{activity.description}\n--{activity.description}\n')
+    else:
+        print(f'No activities found in category {category}')
 
 def find_activity_by_currency():
-    pass
+    currency = input("Enter the activity's currency: ")
+    activities = Activity.find_by_currency(currency)
+    if activities:
+        for activity in activities:
+            print(f'--"{activity.name}" ({activity.category})\n--Cost: {activity.cost} {activity.currency}\n--{activity.description}\n')
+    else:
+        print(f'No activities found with currency {currency}')
 
 def create_activity():
-    pass
+    trips = Trip.get_all()
+    if trips:
+        print("Existing trips:")
+        for idx, trip in enumerate(trips):
+            print(f'{idx + 1}. {trip.name} in {trip.location}')
+        choice = input("Select a trip by number or type 'new' to create a new trip: ")
+        if choice.lower() == 'new':
+            trip = create_trip()
+        else:
+            try:
+                choice = int(choice)
+                if 1<= choice <= len(trips):
+                    trip = trip[choice - 1]
+                else:
+                    print("Invalid choice. Please select a valid trip number.")
+                    return
+            except ValueError:
+                print("Invalid input. Please enter a number or 'new'.")
+                return
+    else:
+        print("No existing trips found. You need to create a new trip.")
+        trip = create_trip()
+
+    name = input("Enter a name for the activity: ")
+    cost = input("Enter a cost for the activity: ")
+    currency = input("Enter a currency for the activity: ")
+
+    categories = ["Relaxation", "Photography", "Entertainment", "Cultural", "Culinary", "Adventure", "Sports"]
+    category = input("Enter a category for the activity: ")
+    for idx, category in enumerate(categories):
+        print(f'{idx + 1}. {category}')
+    category_choice = input("Enter the number corresponding to the category: ")
+    try:
+        category_choice = int(category_choice)
+        if 1<= category_choice <= len(categories):
+            category = categories[category_choice - 1]
+        else:
+            print("Invalid choice, Please select a valid category number.")
+            return
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+    
+    description = input("Enter a description for the activity: ")
+    trip_id = trip.id
+
+    try:
+        activity = Activity.create(name, cost, currency, category, description, trip_id)
+        print(f'Successfully created {name}, details: {activity}')
+    except Exception as exc:
+        print("Error: ", exc)
+    
 
 def update_activity():
     pass
