@@ -1,3 +1,5 @@
+# lib/models/activity.py
+
 from models.__init__ import CURSOR, CONN
 from models.trip import Trip
 
@@ -86,6 +88,7 @@ class Activity:
             currency TEXT,
             category TEXT,
             description TEXT,
+            trip_id INTEGER,
             FOREIGN KEY (trip_id) REFERENCES trips(id));
         """
         CURSOR.execute(sql)

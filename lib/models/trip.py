@@ -1,3 +1,5 @@
+# lib/models/trip.py
+
 from models.__init__ import CURSOR, CONN
 
 class Trip:
