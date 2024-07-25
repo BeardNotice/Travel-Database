@@ -146,7 +146,44 @@ def create_activity():
     
 
 def update_activity():
-    pass
+    name_ = input("Enter the name of the activity to update: ")
+    if activity:= Activity.find_by_name(name_):
+        try:
+            new_name = input(f"Enter a new name for {name_} or press Enter to keep '{activity.name}': ")
+            if new_name:
+                activity.name = new_name
+            new_cost = input(f"Enter a new cost or press Enter to keep '{activity.cost}': ")
+            if new_cost:
+                activity.cost = new_cost
+            new_currency = input(f"Enter a new currency or press Enter to keep '{activity.currency}': ")
+            if new_currency:
+                activity.currency = new_currency
+            categories = ["Relaxation", "Photography", "Entertainment", "Cultural", "Culinary", "Adventure", "Sports"]
+            print("Choose a new category for the activity or press Enter to keep the current category: ")
+            for idx, category in enumerate(categories):
+                print(f"{idx + 1}. {category}")
+                print(f"Current category: {activity.category}")
+
+            category_choice = input("Enter the number corresponding to the new category: ")
+            if category_choice:
+                try:
+                    category_choice = int(category_choice)
+                    if 1<= category_choice <= len(categories):
+                        activity.category = categories[category_choice - 1]
+                    else:
+                        print("Invalid choice. Keeping the current category.")
+                except ValueError:
+                    print("Invalid input. Keeping the current category.")
+            new_description = input(f"Add a new description or press Enter to keep the current description:\n'{activity.description}")
+            if new_description:
+                activity.description = new_description
+            activity.update()
+            print(f"Sucessfully updated {activity.name}")
+        except Exception as exc:
+            print("Error: ", exc)
+    else:
+        print(f"{name_} was not found.")
+
 
 def delete_activity():
     pass
