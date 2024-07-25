@@ -215,3 +215,14 @@ class Activity:
         """
         rows = CURSOR.execute(sql, (category,)).fetchall()
         return [cls.instance_from_db(row) for row in rows]
+    
+    @classmethod
+    def find_by_trip_id(cls, trip_id):
+        """return a list of activity objects corresponding to table rows matching the specified trip_id"""
+        sql = """
+            SELECT *
+            FROM activities
+            WHERE trip_id = ?
+        """
+        rows = CURSOR.execute(sql, (trip_id,)).fetchall()
+        return [cls.instance_from_db(row) for row in rows]

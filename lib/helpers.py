@@ -186,10 +186,30 @@ def update_activity():
 
 
 def delete_activity():
-    pass
+    name = input("Enter the name of the activity to be deleted: ")
+    activity = Activity.find_by_name(name)
+    if activity:
+        try:
+            activity.delete()
+            print(f'Succesfully deleted {name}.')
+        except Exception as exc:
+            print(f'Error deleting {name}: {exc}')
+    else:
+        print(f'{name} was not found.')
 
 def list_trip_activities():
-    pass
+    trip_name = input("Enter the trip name to list its activities: ")
+    trip = Trip.find_by_name(trip_name)
+    if trip:
+        activities = Activity.find_by_trip_id(trip.id)
+    else:
+        print(f'No trip found with the name {trip_name}')
+        return
+    if activities:
+        for activity in activities:
+            print(f'--"{activity.name}" ({activity.category})\n--Cost: {activity.cost} {activity.currency}\n--{activity.description}\n')
+    else:
+        print("No activities found for the selected criteria.")
 
 
 def exit_program():
