@@ -5,15 +5,15 @@ from models.activity import Activity
 
 def list_trips():
     trips = Trip.get_all()
-    print("\n")
-    for trip in trips:    
-        print(f'"{trip.name}" in {trip.location}: {trip.start_date} - {trip.end_date}')
-    print("\n")
+    print("\nTrips:\n")
+    for i, trip in enumerate(trips):    
+        print(f'{i + 1}. "{trip.name}" in {trip.location}: {trip.start_date} - {trip.end_date}')
+    print("")
 
 def get_trips_by_name():
     name = input("Enter Trip's name: ")
     trip = Trip.find_by_name(name)
-    print(trip) if trip else print(f'{trip} was not found.')
+    print(f'\n-"{trip.name}" in {trip.location}:\n     {trip.start_date} - {trip.end_date}\n') if trip else print(f'{trip} was not found.')
 
 def create_trip():
     name = input("Enter a name for the trip: ")
@@ -21,8 +21,8 @@ def create_trip():
     start_date = input("Add the start date: ")
     end_date = input("Add the end date: ")
     try:
-        trip = Trip.create(name, location, start_date, end_date)
-        print(f'Sucessfully created {name}, details: {trip}')
+        Trip.create(name, location, start_date, end_date)
+        print(f'Sucessfully created {name}')
     except Exception as exc:
         print("Error: ", exc)
 
@@ -30,47 +30,53 @@ def update_trip():
     name_ = input("Enter the name of the trip to update: ")
     if trip := Trip.find_by_name(name_):
         try:
-            new_name = input(f"Enter a new name for {name_}")
-            trip.name=new_name
-            new_location = input('Enter a new location: ')
-            trip.location = new_location
-            new_start_date = input("Enter a new start date: ")
-            trip.start_date = new_start_date
-            new_end_date = input("Enter new end date: ")
-            trip.end_date = new_end_date
+            new_name = input(f"Add a new name for {name_} or press Enter to skip: ")
+            if new_name:
+                trip.name=new_name
+            new_location = input('Add a new location or press Enter to skip: ')
+            if new_location:
+                trip.location = new_location
+            new_start_date = input("Add a new start date or press Enter to skip: ")
+            if new_start_date:
+                trip.start_date = new_start_date
+            new_end_date = input("Add new end date or press Enter to skip: ")
+            if new_end_date:
+                trip.end_date = new_end_date
 
             trip.update()
         except Exception as exc:
-            print(f'Error updating: {exc}')
+            print(f'Error updating: {exc}\n')
     else:
-        print(f'{name_} was not found.')
-
-
-
+        print(f'{name_} was not found.\n')
 
 def delete_trip():
     name = input("Enter the name of the trip to be deleted: ")
     trip = Trip.find_by_name(name)
     if trip:
-        try:
-            trip.delete()
-            print(f'Sucessfully deleted {name}.')
-        except Exception as exc:
-            print(f'Error deleting {name}: {exc}')
+        confirmation = input(f'Are you sure you want to delete "{name}"? (Y/N)').strip().lower()
+        if confirmation == "y":
+            try:
+                trip.delete()
+                print(f'\nSucessfully deleted {name}.\n')
+            except Exception as exc:
+                print(f'\nError deleting {name}: {exc}\n')
+        else:
+            print("Cancelled Deletion.")
     else:
-        print(f'{name} was not found.')
+        print(f'\n{name} was not found.\n')
 
 def list_activities():
     activities = Activity.get_all()
-    print("\n")
+    print("==========================\n")
     for activity in activities:
-        print(f'--"{activity.name}" ({activity.category})\n--Cost: {activity.cost} {activity.currency}\n--{activity.description}\n\n')
+        print(f'-"{activity.name}" ({activity.category}):\n     Cost: {activity.cost} {activity.currency}\n     Description: {activity.description}\n')
+    print("==========================")
 
 def find_activity_by_name():
     name = input("Enter the activity by the activity's name: ")
     activity = Activity.find_by_name(name)
     if activity:
-        print(f'--"{activity.name}" ({activity.category})\n--Cost: {activity.cost} {activity.currency}\n--{activity.description}\n')
+        print(f'-"{activity.name}" ({activity.category}):\n     Cost: {activity.cost} {activity.currency}\n     Description: {activity.description}\n')
     else:
         print(f'{name} was not found.')
 
@@ -79,7 +85,7 @@ def find_activity_by_category():
     activities = Activity.find_by_category(category)
     if activities:
         for activity in activities:
-            print(f'--"{activity.name}" ({activity.category})\n--Cost: {activity.cost} {activity.currency}\n--{activity.description}\n--{activity.description}\n')
+            print(f'-"{activity.name}" ({activity.category}):\n     Cost: {activity.cost} {activity.currency}\n     Description: {activity.description}\n')
     else:
         print(f'No activities found in category {category}')
 
@@ -88,9 +94,9 @@ def find_activity_by_currency():
     activities = Activity.find_by_currency(currency)
     if activities:
         for activity in activities:
-            print(f'--"{activity.name}" ({activity.category})\n--Cost: {activity.cost} {activity.currency}\n--{activity.description}\n')
+            print(f'-"{activity.name}" ({activity.category}):\n     Cost: {activity.cost} {activity.currency}\n     Description: {activity.description}\n')
     else:
-        print(f'No activities found with currency {currency}')
+        print(f'No activities found with currency {currency}\n')
 
 def create_activity():
     trips = Trip.get_all()
@@ -105,23 +111,23 @@ def create_activity():
             try:
                 choice = int(choice)
                 if 1<= choice <= len(trips):
-                    trip = trip[choice - 1]
+                    trip = trips[choice - 1]
                 else:
-                    print("Invalid choice. Please select a valid trip number.")
+                    print("Invalid choice. Please select a valid trip number.\n")
                     return
             except ValueError:
-                print("Invalid input. Please enter a number or 'new'.")
+                print("Invalid input. Please enter a number or 'new'.\n")
                 return
     else:
-        print("No existing trips found. You need to create a new trip.")
+        print("No existing trips found. You need to create a new trip.\n")
         trip = create_trip()
 
     name = input("Enter a name for the activity: ")
-    cost = input("Enter a cost for the activity: ")
+    cost = float(input("Enter a cost for the activity: "))
     currency = input("Enter a currency for the activity: ")
 
     categories = ["Relaxation", "Photography", "Entertainment", "Cultural", "Culinary", "Adventure", "Sports"]
-    category = input("Enter a category for the activity: ")
+    #category = input("Enter a category for the activity: ")
     for idx, category in enumerate(categories):
         print(f'{idx + 1}. {category}')
     category_choice = input("Enter the number corresponding to the category: ")
@@ -130,17 +136,17 @@ def create_activity():
         if 1<= category_choice <= len(categories):
             category = categories[category_choice - 1]
         else:
-            print("Invalid choice, Please select a valid category number.")
+            print("Invalid choice, Please select a valid category number.\n")
             return
     except ValueError:
-        print("Invalid input. Please enter a number.")
+        print("Invalid input. Please enter a number.\n")
     
     description = input("Enter a description for the activity: ")
     trip_id = trip.id
 
     try:
-        activity = Activity.create(name, cost, currency, category, description, trip_id)
-        print(f'Successfully created {name}, details: {activity}')
+        Activity.create(name, cost, currency.upper(), category, description, trip_id)
+        print(f'Successfully created {name}\n')
     except Exception as exc:
         print("Error: ", exc)
     
@@ -189,11 +195,15 @@ def delete_activity():
     name = input("Enter the name of the activity to be deleted: ")
     activity = Activity.find_by_name(name)
     if activity:
-        try:
-            activity.delete()
-            print(f'Succesfully deleted {name}.')
-        except Exception as exc:
-            print(f'Error deleting {name}: {exc}')
+        confirm = input(f"Are you sure you want to Delete '{name}? (Y/N)").strip().lower()
+        if confirm == "y":
+            try:
+                activity.delete()
+                print(f'Succesfully deleted {name}.')
+            except Exception as exc:
+                print(f'Error deleting {name}: {exc}')
+        else:
+            print("Deletion cancelled.")
     else:
         print(f'{name} was not found.')
 
@@ -210,6 +220,40 @@ def list_trip_activities():
             print(f'--"{activity.name}" ({activity.category})\n--Cost: {activity.cost} {activity.currency}\n--{activity.description}\n')
     else:
         print("No activities found for the selected criteria.")
+
+def quick_overview():
+    trips = Trip.get_all()
+    if not trips:
+        print(create_boxed_text("No trips found."))
+        return
+    output = []
+    for trip in trips:
+        output.append(f'-{trip.name} in {trip.location}\n')
+        activities = Activity.find_by_trip_id(trip.id)
+        if activities:
+            output.append("  Activities:")
+            for activity in activities:
+                output.append(f'     -{activity.name} ({activity.category})')
+        else:
+            output.append("     -No activities found.")
+            output.append("-" * 40)
+        output.append("")
+    boxed_output = create_boxed_text('\n'.join(output))
+    print(boxed_output)
+
+# Adds a box around output
+def create_boxed_text(content):
+    lines = content.split('\n')
+    max_length = max(len(line) for line in lines)
+    border_line = '+'+'-'*(max_length+2)+'+'
+
+    boxed_text = [border_line]
+    for line in lines:
+        boxed_text.append(f'| {line.ljust(max_length)} |')
+    boxed_text.append(border_line)
+
+    return '\n'.join(boxed_text)
+
 
 
 def exit_program():

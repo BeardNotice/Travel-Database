@@ -31,7 +31,7 @@ class Activity:
         return self._cost
     @cost.setter
     def cost(self, cost):
-        if isinstance(cost, int):
+        if isinstance(cost, (int, float)):
             self._cost = cost
         else:
             raise ValueError("Cost must be an integer.")
