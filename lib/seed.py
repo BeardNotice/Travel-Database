@@ -16,7 +16,7 @@ def seed_database():
     fall_trip = Trip.create("United Kingdom Trip", "United Kingdom", "10/23/2024", "11/06/2024")
     Activity.create("Water Park", 0, "USD", "Relaxation", "Playing at the water park.", spring_break.id)
     Activity.create("Beach", 0, "USD", "Relaxation", "Lounge and tan on the beach.", spring_break.id)
-    Activity.create("Family Pictures", 350, "USD", "Photography", "Get picturs of the family professionally taken", spring_break.id)
+    Activity.create("Family Pictures", 350, "USD", "Photography", "Get pictures of the family professionally taken", spring_break.id)
     Activity.create("Dolphin Petting", 200, "USD", "Entertainment", "Taking our niece to play with the dolphins", spring_break.id)
     Activity.create("Visit Taos", 0, "USD", "Cultural", "Trip to the local town to check out the art.", summer_trip.id)
     Activity.create("Wheeler Hike", 0, "USD", "Adventure", "Hike up the tallest mountain in the state", summer_trip.id)

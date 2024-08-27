@@ -23,7 +23,7 @@ from helpers import (
 init_colorama(autoreset=True)
 
 
-def display_menu(options, prompt="Select from the following options:"):
+def display_menu(options, prompt="Select from the following options:", is_main_menu=False):
     while True:
         print(prompt)
         for i, (desc, action) in enumerate(options, 1):
@@ -35,7 +35,7 @@ def display_menu(options, prompt="Select from the following options:"):
         try:
             choice = int(choice)
             if 1<=choice<=len(options):
-                if choice == len(options):
+                if not is_main_menu and choice == len(options):
                     break
                 action = options[choice -1][1]
                 if action:
@@ -48,19 +48,20 @@ def display_menu(options, prompt="Select from the following options:"):
 
 
 def main():
+    trip_count = len(Trip.get_all())
+    activity_count = len(Activity.get_all())
 
     options = [
         ("Trips", trip_menu), 
         ("Activities", activity_menu),
-        ("Quick overview", quick_overview),
-        ("Exit the program", None)]
+        ("Quick overview", quick_overview)]
 
     print("----------------------------------")
     print(f"Welcome to {Style.BRIGHT}your{Style.RESET_ALL} Travel Database!")
     print("==================================")
-    print(f"you currently have {Fore.YELLOW}{len(Trip.get_all())}{Fore.RESET} trips and {Fore.YELLOW}{len(Activity.get_all())}{Fore.RESET} activities logged.")
+    print(f"you currently have {Fore.YELLOW}{trip_count}{Fore.RESET} trips and {Fore.YELLOW}{activity_count}{Fore.RESET} activities logged.")
     print("==================================")
-    display_menu(options)
+    display_menu(options, is_main_menu = True)
 
 '''
     while True:
@@ -93,10 +94,10 @@ def menu():
 def trip_menu():
     options = [
         ("List all trips", list_trips),
-        ("Find a trip by name", get_trips_by_name),
         ("Create a trip", create_trip),
         ("Update a previously created trip", update_trip),
         ("Delete a trip", delete_trip),
+        ("Find a trip by name", get_trips_by_name),
         ("Return to the previous menu", None)]
     display_menu(options, "Select from the following trip options:")
 
@@ -129,12 +130,12 @@ def trip_menu():
 def activity_menu():
     options = [
         ("List all activities", list_activities),
-        ("Find an activity by name", find_activity_by_name),
-        ("Find an activity by category", find_activity_by_category),
+        ("List activities by trip", list_trip_activities),
         ("Create an activity", create_activity),
         ("Update an existing activity", update_activity),
         ("Delete an activity", delete_activity),
-        ("List activities by trip", list_trip_activities),
+        ("Find an activity by name", find_activity_by_name),
+        ("Find an activity by category", find_activity_by_category),
         ("Return to previous menu", None)]
     display_menu(options, "Select from the following activity options:")
 '''    

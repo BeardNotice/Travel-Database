@@ -1,172 +1,90 @@
-# Phase 3 CLI+ORM Project Template
+# Trip and Activity Logger CLI
 
-## Learning Goals
+This is a Python command-line interface (CLI) application that allows users to log and manage trips and associated activities. The program uses two models, `Trip` and `Activity`, to store information about trips and their corresponding activities and displays this information to the user.
 
-- Discuss the basic directory structure of a CLI.
-- Outline the first steps in building a CLI.
+## Features
 
----
+- **Create and Manage Trips:** Users can create trips by specifying details such as the trip name, location, start date, and end date. Users can also update or delete existing trips.
+- **Log Activities for Trips:** Users can log various activities for each trip, including the name, cost, category, description, and associated trip.
+- **View Trips and Activities:** Users can view a list of all trips or activities, as well as search for trips and activities based on different criteria.
 
-## Introduction
+## Important Files
 
-You now have a basic idea of what constitutes a CLI. Fork and clone this lesson
-for a project template for your CLI.
+### `lib/cli.py`
 
-Take a look at the directory structure:
+The `cli.py` file is the core of the application, handling all user interactions. This file contains the command-line interface logic, parsing user inputs and invoking the appropriate functions to perform the requested operations.
 
-```console
-.
-├── Pipfile
-├── Pipfile.lock
-├── README.md
-└── lib
-    ├── models
-    │   ├── __init__.py
-    │   └── model_1.py
-    ├── cli.py
-    ├── debug.py
-    └── helpers.py
-```
+- **Main CLI Loop:** The script runs a loop that listens for user commands, processes them, and calls the relevant functions from other modules to handle tasks like creating, updating, or listing trips and activities.
+- **Command Handling:** Each user command is mapped to a specific function, making it easy to extend or modify the CLI's behavior. Commands include creating a trip, listing trips, creating an activity, and listing activities, among others.
 
-Note: The directory also includes two files named `CONTRIBUTING.md` and
-`LICENSE.md` that are specific to Flatiron's curriculum. You can disregard or
-delete the files if you want.
+### `lib/helpers.py`
 
----
+The `helpers.py` file provides utility functions that support the main CLI operations. These functions handle common tasks, such as exiting the program, listing trips and activities, and formatting text output.
 
-## Generating Your Environment
+- **exit_program:** Safely exits the program, ensuring any necessary cleanup is performed.
+- **list_trips:** Retrieves and displays all trips stored in the database.
+- **get_trips_by_name:** Fetches trips that match a given name, providing a way to filter trips by their title.
+- **create_trip:** Invokes the trip creation process, gathering user input and interacting with the database.
+- **update_trip:** Allows users to update existing trip details.
+- **delete_trip:** Handles the deletion of trips from the database.
+- **list_activities:** Retrieves and displays all activities associated with a specific trip.
+- **find_activity_by_name:** Searches for activities by name, allowing users to locate specific activities.
 
-You might have noticed in the file structure- there's already a Pipfile!
+### `lib/trip.py` & `lib/activity.py`
 
-Install any additional dependencies you know you'll need for your project by
-adding them to the `Pipfile`. Then run the commands:
+The `trip.py` and `activity.py` files define the `Trip` and `Activity` models, respectively. These models encapsulate the properties and behaviors of trips and activities, including methods for interacting with the database. Many of the functions in these models are similar, as both types of records require similar CRUD (Create, Read, Update, Delete) operations.
 
-```console
-pipenv install
-pipenv shell
-```
+- **create_table:** Sets up the database table for storing trips or activities if it doesn't already exist.
+- **drop_table:** Removes the trips or activities table from the database, useful for resetting or cleaning up the data.
+- **create:** Adds a new trip or activity to the database and returns the corresponding `Trip` or `Activity` object.
+- **instance_from_db:** Converts a database row into a `Trip` or `Activity` instance, bridging the gap between raw data and the application's model.
+- **update:** Updates the details of an existing trip or activity in the database.
+- **delete:** Removes a trip or activity from the database.
+- **all:** Retrieves all trips or activities from the database as a list of `Trip` or `Activity` objects.
+- **find_by_id:** Finds a trip or activity by its unique ID.
+- **find_by_name:** Searches for the first trip or activity matching a specified name.
+- **activities (Trip specific):** Returns a list of activities associated with a specific trip, linking the `Trip` and `Activity` models.
+- **trip (Activity specific):** Returns the `Trip` object associated with the activity, linking the `Activity` model back to the `Trip` model.
 
----
+### `lib/__init__.py`
 
-## Generating Your CLI
+The `__init__.py` file is responsible for setting up the database connection and cursor, which are used throughout the application to interact with the SQLite database.
 
-A CLI is, simply put, an interactive script and prompts the user and performs
-operations based on user input.
+- **CONN:** The database connection object, allowing the application to execute SQL commands.
+- **CURSOR:** The database cursor, used to execute queries and retrieve data from the database.
 
-The project template has a sample CLI in `lib/cli.py` that looks like this:
+### `lib/seed.py`
 
-```py
-# lib/cli.py
+The `seed.py` file is a utility script that populates the database with initial data. This is useful for testing or demonstrating the application's functionality.
 
-from helpers import (
-    exit_program,
-    helper_1
-)
+- **seed_database:** Drops existing tables and recreates them, then inserts sample trips and activities into the database.
 
+## Usage
 
-def main():
-    while True:
-        menu()
-        choice = input("> ")
-        if choice == "0":
-            exit_program()
-        elif choice == "1":
-            helper_1()
-        else:
-            print("Invalid choice")
+1. **Setting Up the Environment:**
+   - Make sure you have Python 3.x installed.
+   - Install the necessary dependency by running:
+     ```
+     pip install colorama ipdb
+     ```
 
+2. **Running the CLI:**
+   - To start the CLI, run the following command:
+     ```
+     python lib/cli.py
+     ```
 
-def menu():
-    print("Please select an option:")
-    print("0. Exit the program")
-    print("1. Some useful function")
+3. **Seeding the Database:**
+   - To seed the database with sample data, run:
+     ```
+     python lib/seed.py
+     ```
+   - This will create initial trips and activities for you to explore.
 
+## Contributing
 
-if __name__ == "__main__":
-    main()
-```
+Feel free to fork this repository and make changes as you see fit. Contributions are always welcome!
 
-The helper functions are located in `lib/helpers.py`:
+## License
 
-```py
-# lib/helpers.py
-
-def helper_1():
-    print("Performing useful function#1.")
-
-
-def exit_program():
-    print("Goodbye!")
-    exit()
-```
-
-You can run the template CLI with `python lib/cli.py`, or include the shebang
-and make it executable with `chmod +x`. The template CLI will ask for input, do
-some work, and accomplish some sort of task.
-
-Past that, CLIs can be whatever you'd like, as long as you follow the project
-requirements.
-
-Of course, you will update `lib/cli.py` with prompts that are appropriate for
-your application, and you will update `lib/helpers.py` to replace `helper_1()`
-with a useful function based on the specific problem domain you decide to
-implement, along with adding other helper functions to the module.
-
-In the `lib/models` folder, you should rename `model_1.py` with the name of a
-data model class from your specific problem domain, and add other classes to the
-folder as needed. The file `lib/models/__init__.py` has been initialized to
-create the necessary database constants. You need to add import statements to
-the various data model classes in order to use the database constants.
-
-You are also welcome to implement a different module and directory structure.
-However, your project should be well organized, modular, and follow the design
-principal of separation of concerns, which means you should separate code
-related to:
-
-- User interface
-- Data persistence
-- Problem domain rules and logic
-
----
-
-## Updating README.md
-
-`README.md` is a Markdown file that should describe your project. You will
-replace the contents of this `README.md` file with a description of **your**
-actual project.
-
-Markdown is not a language that we cover in Flatiron's Software Engineering
-curriculum, but it's not a particularly difficult language to learn (if you've
-ever left a comment on Reddit, you might already know the basics). Refer to the
-cheat sheet in this assignments's resources for a basic guide to Markdown.
-
-### What Goes into a README?
-
-This README serves as a template. Replace the contents of this file to describe
-the important files in your project and describe what they do. Each Python file
-that you edit should get at least a paragraph, and each function should be
-described with a sentence or two.
-
-Describe your actual CLI script first, and with a good level of detail. The rest
-should be ordered by importance to the user. (Probably functions next, then
-models.)
-
-Screenshots and links to resources that you used throughout are also useful to
-users and collaborators, but a little more syntactically complicated. Only add
-these in if you're feeling comfortable with Markdown.
-
----
-
-## Conclusion
-
-A lot of work goes into a good CLI, but it all relies on concepts that you've
-practiced quite a bit by now. Hopefully this template and guide will get you off
-to a good start with your Phase 3 Project.
-
-Happy coding!
-
----
-
-## Resources
-
-- [Markdown Cheat Sheet](https://www.markdownguide.org/cheat-sheet/)
+This project is licensed under the MIT License. See the `LICENSE` file for details.
