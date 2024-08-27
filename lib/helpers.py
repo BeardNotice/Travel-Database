@@ -2,15 +2,72 @@
 
 from models.trip import Trip
 from models.activity import Activity
-
+#list trips needs to be fixed big time
 def list_trips():
     trips = Trip.get_all()
-    print("\nTrips:\n")
-    for i, trip in enumerate(trips):    
-        print(f'{i + 1}. "{trip.name}" in {trip.location}: {trip.start_date} - {trip.end_date}')
-    print("")
+    activity_submenu = [
+        ("Add an activity", create_activity),
+        ("Update an existing activity", update_activity),
+        ("Delete an activity", delete_activity)
+    ]
+    
+    if not trips:
+        print("No Trips Available.")
+        new_trip = input("Create a trip? (Y/N): ").strip().lower()
+        if new_trip == "y":
+            create_trip()
+        return  # Exit if no trips exist after trying to create one
 
-def get_trips_by_name():
+    while True:
+        print("\nTrips:\n")
+        for i, trip in enumerate(trips):
+            print(f'{i + 1}. "{trip.name}" in {trip.location}: {trip.start_date} - {trip.end_date}')
+        print(f"{len(trips) + 1}. Return to menu.")
+        print("")
+
+        choice = input("Select a trip to manage its activities: ").strip().lower()
+        if choice in ["e", "exit"]:
+            exit_program()
+        elif choice == str(len(trips) + 1):
+            break
+        else:
+            try:
+                choice = int(choice)
+                if 1 <= choice <= len(trips):
+                    selected_trip = trips[choice - 1]
+                    manage_trip_activities(selected_trip, activity_submenu)
+                else:
+                    print("Invalid choice. Please select a valid option.")
+            except ValueError:
+                print("Invalid input, please enter a number.")
+
+def manage_trip_activities(trip, activity_submenu):
+    while True:
+        print(f"\nManaging activities for '{trip.name}' in {trip.location}: {trip.start_date} - {trip.end_date}")
+        for i, (desc, _) in enumerate(activity_submenu, 1):
+            print(f"{i}. {desc}")
+        print(f"{len(activity_submenu) + 1}. Return to previous menu")
+        print("")
+
+        activity_choice = input("Select from the following options: ").strip().lower()
+        if activity_choice in ["e", "exit"]:
+            exit_program()
+        elif activity_choice == str(len(activity_submenu) + 1):
+            break
+        else:
+            try:
+                activity_choice = int(activity_choice)
+                if 1 <= activity_choice <= len(activity_submenu):
+                    action = activity_submenu[activity_choice - 1][1]
+                    if action:
+                        action(trip.id)
+                else:
+                    print("Invalid choice. Please select a valid option.")
+            except ValueError:
+                print("Invalid input, please enter a number.")
+
+
+def get_trip_by_name():
     name = input("Enter Trip's name: ")
     trip = Trip.find_by_name(name)
     print(f'\n-"{trip.name}" in {trip.location}:\n     {trip.start_date} - {trip.end_date}\n') if trip else print(f'{trip} was not found.')
@@ -98,57 +155,76 @@ def find_activity_by_currency():
     else:
         print(f'No activities found with currency {currency}\n')
 
-def create_activity():
-    trips = Trip.get_all()
-    if trips:
-        print("Existing trips:")
-        for idx, trip in enumerate(trips):
-            print(f'{idx + 1}. {trip.name} in {trip.location}')
-        choice = input("Select a trip by number or type 'new' to create a new trip: ")
-        if choice.lower() == 'new':
-            trip = create_trip()
-        else:
-            try:
-                choice = int(choice)
-                if 1<= choice <= len(trips):
-                    trip = trips[choice - 1]
+def create_activity(trip_id=None):
+    while True:
+        # If trip_id is not provided, prompt the user to select or create a trip
+        if trip_id is None:
+            trips = Trip.get_all()
+            if trips:
+                print("Existing trips:")
+                for idx, trip in enumerate(trips):
+                    print(f'{idx + 1}. {trip.name} in {trip.location}')
+                choice = input("Select a trip by number or type 'new' to create a new trip: ").strip().lower()
+                if choice == 'new':
+                    trip = create_trip()
+                    trip_id = trip.id
                 else:
-                    print("Invalid choice. Please select a valid trip number.\n")
-                    return
-            except ValueError:
-                print("Invalid input. Please enter a number or 'new'.\n")
-                return
-    else:
-        print("No existing trips found. You need to create a new trip.\n")
-        trip = create_trip()
-
-    name = input("Enter a name for the activity: ")
-    cost = float(input("Enter a cost for the activity: "))
-    currency = input("Enter a currency for the activity: ")
-
-    categories = ["Relaxation", "Photography", "Entertainment", "Cultural", "Culinary", "Adventure", "Sports"]
-    #category = input("Enter a category for the activity: ")
-    for idx, category in enumerate(categories):
-        print(f'{idx + 1}. {category}')
-    category_choice = input("Enter the number corresponding to the category: ")
-    try:
-        category_choice = int(category_choice)
-        if 1<= category_choice <= len(categories):
-            category = categories[category_choice - 1]
+                    try:
+                        choice = int(choice)
+                        if 1 <= choice <= len(trips):
+                            trip = trips[choice - 1]
+                            trip_id = trip.id
+                        else:
+                            print("Invalid choice. Please select a valid trip number.\n")
+                            continue  # Loop back to allow another selection
+                    except ValueError:
+                        print("Invalid input. Please enter a number.\n")
+                        continue  # Loop back to allow another selection
+            else:
+                print("No existing trips found. You need to create a new trip.\n")
+                trip = create_trip()
+                trip_id = trip.id
         else:
-            print("Invalid choice, Please select a valid category number.\n")
-            return
-    except ValueError:
-        print("Invalid input. Please enter a number.\n")
-    
-    description = input("Enter a description for the activity: ")
-    trip_id = trip.id
+            # Validate the provided trip_id
+            trip = Trip.find_by_id(trip_id)
+            if not trip:
+                print("Invalid trip ID. No such trip exists.")
+                return
 
-    try:
-        Activity.create(name, cost, currency.upper(), category, description, trip_id)
-        print(f'Successfully created {name}\n')
-    except Exception as exc:
-        print("Error: ", exc)
+        # Now proceed with creating an activity for the selected trip
+        name = input("Enter a name for the activity: ")
+        try:
+            cost = float(input("Enter a cost for the activity: "))
+        except ValueError:
+            print("Invalid input. Please enter a valid number for the cost.\n")
+            continue  # Loop back to allow another input for the cost
+        
+        currency = input("Enter a currency for the activity: ")
+
+        categories = ["Relaxation", "Photography", "Entertainment", "Cultural", "Culinary", "Adventure", "Sports"]
+        while True:
+            for idx, category in enumerate(categories):
+                print(f'{idx + 1}. {category}')
+            category_choice = input("Enter the number corresponding to the category: ").strip()
+            try:
+                category_choice = int(category_choice)
+                if 1 <= category_choice <= len(categories):
+                    category = categories[category_choice - 1]
+                    break  # Exit the category selection loop if valid
+                else:
+                    print("Invalid choice. Please select a valid category number.\n")
+            except ValueError:
+                print("Invalid input. Please enter a number.\n")
+
+        description = input("Enter a description for the activity: ")
+
+        try:
+            Activity.create(name, cost, currency.upper(), category, description, trip_id)
+            print(f'Successfully created {name} for trip {trip.name} in {trip.location}.\n')
+            break  # Exit the main loop after successful creation
+        except Exception as exc:
+            print("Error: ", exc)
+            continue  # Loop back to allow the user to retry
     
 
 def update_activity():

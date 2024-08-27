@@ -6,7 +6,7 @@ from colorama import Fore, Style, init as init_colorama
 from helpers import (
     exit_program,
     list_trips,
-    get_trips_by_name,
+    get_trip_by_name,
     create_trip,
     update_trip,
     delete_trip,
@@ -98,7 +98,7 @@ def trip_menu():
         ("Create a trip", create_trip),
         ("Update a previously created trip", update_trip),
         ("Delete a trip", delete_trip),
-        ("Find a trip by name", get_trips_by_name),
+        ("Find a trip by name", get_trip_by_name),
         ("Return to the previous menu", None)]
     display_menu(options, "Select from the following trip options:")
 
