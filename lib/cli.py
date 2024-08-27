@@ -52,9 +52,9 @@ def main():
     activity_count = len(Activity.get_all())
 
     options = [
+        ("Quick overview", quick_overview),
         ("Trips", trip_menu), 
-        ("Activities", activity_menu),
-        ("Quick overview", quick_overview)]
+        ("Activities", activity_menu)]
 
     print("----------------------------------")
     print(f"Welcome to {Style.BRIGHT}your{Style.RESET_ALL} Travel Database!")
@@ -64,6 +64,7 @@ def main():
     display_menu(options, is_main_menu = True)
 
 '''
+#main loop initial version, depreciated
     while True:
         menu()
         choice = input("> ")
@@ -102,6 +103,7 @@ def trip_menu():
     display_menu(options, "Select from the following trip options:")
 
 """ 
+#trip loop depreciated
     while True:
         print('Select from the following trip options:')
         for i, (desc, _) in enumerate(options, 1):
@@ -138,7 +140,8 @@ def activity_menu():
         ("Find an activity by category", find_activity_by_category),
         ("Return to previous menu", None)]
     display_menu(options, "Select from the following activity options:")
-'''    
+'''
+#activity loop depreciated
     while True:
         print('Select from the following activity options: ')
         for i, (desc, _) in enumerate(options, 1):

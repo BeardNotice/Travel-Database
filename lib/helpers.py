@@ -230,14 +230,14 @@ def quick_overview():
     for trip in trips:
         output.append(f'-{trip.name} in {trip.location}\n')
         activities = Activity.find_by_trip_id(trip.id)
+        output.append("  Activities:")
         if activities:
-            output.append("  Activities:")
             for activity in activities:
                 output.append(f'     -{activity.name} ({activity.category})')
         else:
             output.append("     -No activities found.")
-            output.append("-" * 40)
         output.append("")
+        output.append("-" * 40)
     boxed_output = create_boxed_text('\n'.join(output))
     print(boxed_output)
 
