@@ -6,7 +6,7 @@ from colorama import Fore, init as init_colorama
 
 init_colorama(autoreset=True)
 
-def list_trips():
+def manage_trips():
     trips = Trip.get_all()
     activity_submenu = [
         ("Add an activity", create_activity),

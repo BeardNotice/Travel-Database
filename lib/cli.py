@@ -5,7 +5,7 @@ from colorama import Fore, Style, init as init_colorama
 
 from helpers import (
     exit_program,
-    list_trips,
+    manage_trips,
     get_trip_by_name,
     create_trip,
     update_trip,
@@ -95,7 +95,7 @@ def menu():
 def trip_menu():
     trip_count = len(Trip.get_all())
     options = [
-        ("Manage trips", list_trips),
+        ("Manage trips", manage_trips),
         ("Create a trip", create_trip),
         ("Update a previously created trip", update_trip),
         ("Delete a trip", delete_trip),
