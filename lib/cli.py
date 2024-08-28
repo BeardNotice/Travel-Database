@@ -93,13 +93,17 @@ def menu():
 
 
 def trip_menu():
+    trip_count = len(Trip.get_all())
     options = [
-        ("List all trips", list_trips),
+        ("Manage trips", list_trips),
         ("Create a trip", create_trip),
         ("Update a previously created trip", update_trip),
         ("Delete a trip", delete_trip),
         ("Find a trip by name", get_trip_by_name),
         ("Return to the previous menu", None)]
+    print("--------------------------------------")
+    print(f"You have {trip_count} trips logged.")
+    print("--------------------------------------")
     display_menu(options, "Select from the following trip options:")
 
 """ 
@@ -130,6 +134,7 @@ def trip_menu():
 
 
 def activity_menu():
+    activity_count = len(Activity.get_all)
     options = [
         ("List all activities", list_activities),
         ("List activities by trip", list_trip_activities),
@@ -139,6 +144,9 @@ def activity_menu():
         ("Find an activity by name", find_activity_by_name),
         ("Find an activity by category", find_activity_by_category),
         ("Return to previous menu", None)]
+    print("--------------------------------------")
+    print(f"you have {activity_count} activities logged.")
+    print("--------------------------------------")
     display_menu(options, "Select from the following activity options:")
 '''
 #activity loop depreciated
