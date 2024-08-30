@@ -64,10 +64,10 @@ def display_menu(options, prompt="Select from the following options:", is_main_m
 
 def main():
     options = [
-        ("Quick overview", quick_overview),
+        ("Quick Overview", quick_overview),
         ("Manage Trips", manage_trips),
-        ("Trips", trip_menu), 
-        ("Activities", activity_menu)]
+        ("Trips Menu", trip_menu), 
+        ("Activities Menu", activity_menu)]
 
     print("----------------------------------")
     print(f"Welcome to {Style.BRIGHT}your{Style.RESET_ALL} Travel Database!")
@@ -104,7 +104,6 @@ def menu():
 
 def trip_menu():
     options = [
-        ("Manage trips", manage_trips),
         ("Create a trip", create_trip),
         ("Update a previously created trip", update_trip),
         ("Delete a trip", delete_trip),

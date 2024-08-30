@@ -25,14 +25,30 @@ def manage_trips():
     while True:
         print("\nTrips:\n")
         for i, trip in enumerate(trips):
-            print(f'{Fore.CYAN}{i + 1}. "{trip.name}" in {trip.location}: {trip.start_date} - {trip.end_date}')
-        print(f"{Fore.CYAN}{len(trips) + 1}. Return to menu.")
+            print(f'{Fore.CYAN}{i + 1}. {Fore.MAGENTA}"{trip.name}"{Fore.CYAN} in {trip.location}: {trip.start_date} - {trip.end_date}')
+        print(f"{Fore.CYAN}{len(trips) + 1}. {Fore.LIGHTGREEN_EX}Create{Fore.CYAN} a new trip.", end = "    ")
+        print(f"{Fore.CYAN}{len(trips) + 2}. {Fore.BLUE}Update{Fore.CYAN} a trip.", end = "    ")
+        print(f"{Fore.CYAN}{len(trips) + 3}. {Fore.RED}Delete{Fore.CYAN} a trip.")
+        print(f"{Fore.CYAN}{len(trips) + 4}. Return to menu.")
         print("")
-
-        choice = input(f"Select a trip to manage its activities or type {Fore.GREEN}(e)xit{Fore.RESET} at any time to quit: ").strip().lower()
+        print("Select a trip to manage its activities.")
+        print(f"You can also {Fore.LIGHTGREEN_EX}create{Fore.RESET}, {Fore.BLUE}update{Fore.RESET}, or {Fore.RED}delete{Fore.RESET} trip(s).")
+        choice = input(f"Or type {Fore.GREEN}(e)xit{Fore.RESET} at any time to quit: ").strip().lower()
         if choice in ["e", "exit"]:
             exit_program()
         elif choice == str(len(trips) + 1):
+            create_trip()
+            trips = Trip.get_all()
+            continue
+        elif choice == str(len(trips) + 2):
+            update_trip()
+            trips = Trip.get_all()
+            continue
+        elif choice == str(len(trips) + 3):
+            delete_trip()
+            trips = Trip.get_all()
+            continue
+        elif choice == str(len(trips) + 4):
             break
         else:
             try:
@@ -165,6 +181,7 @@ def delete_trip():
                 try:
                     trip.delete()
                     print(f'\n{Fore.GREEN}Sucessfully deleted {name}.\n')
+                    break
                 except ValueError as exc:
                     print(f'\n{Fore.RED}Error deleting {name}: {exc}\n')
             else:
