@@ -120,7 +120,8 @@ class Trip:
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
 
-        del type(self).all[self.id]
+        if self.id in type(self).all:
+            del type(self).all[self.id]
         self.id = None
     
     @classmethod

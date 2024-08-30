@@ -23,8 +23,23 @@ from helpers import (
 init_colorama(autoreset=True)
 
 
-def display_menu(options, prompt="Select from the following options:", is_main_menu=False):
+def display_menu(options, prompt="Select from the following options:", is_main_menu=False, info_display=0):
+    trip_count = len(Trip.get_all())
+    activity_count = len(Activity.get_all())
+
     while True:
+        if info_display == 1:
+            print("==================================")
+            print(f"you currently have {Fore.YELLOW}{trip_count}{Fore.RESET} trips and {Fore.YELLOW}{activity_count}{Fore.RESET} activities logged.")
+            print("==================================")
+        if info_display == 2:
+            print("--------------------------------------")
+            print(f"You have {Fore.YELLOW}{trip_count}{Fore.RESET} trips logged.")
+            print("--------------------------------------")
+        if info_display == 3:
+            print("--------------------------------------")
+            print(f"you have {Fore.YELLOW}{activity_count}{Fore.RESET} activities logged.")
+            print("--------------------------------------") 
         print(prompt)
         for i, (desc, action) in enumerate(options, 1):
             print(f'{Fore.CYAN}{i}. {desc}')
@@ -48,20 +63,15 @@ def display_menu(options, prompt="Select from the following options:", is_main_m
 
 
 def main():
-    trip_count = len(Trip.get_all())
-    activity_count = len(Activity.get_all())
-
     options = [
         ("Quick overview", quick_overview),
+        ("Manage Trips", manage_trips),
         ("Trips", trip_menu), 
         ("Activities", activity_menu)]
 
     print("----------------------------------")
     print(f"Welcome to {Style.BRIGHT}your{Style.RESET_ALL} Travel Database!")
-    print("==================================")
-    print(f"you currently have {Fore.YELLOW}{trip_count}{Fore.RESET} trips and {Fore.YELLOW}{activity_count}{Fore.RESET} activities logged.")
-    print("==================================")
-    display_menu(options, is_main_menu = True)
+    display_menu(options, is_main_menu = True, info_display=1)
 
 '''
 #main loop initial version, depreciated
@@ -93,7 +103,6 @@ def menu():
 
 
 def trip_menu():
-    trip_count = len(Trip.get_all())
     options = [
         ("Manage trips", manage_trips),
         ("Create a trip", create_trip),
@@ -101,10 +110,7 @@ def trip_menu():
         ("Delete a trip", delete_trip),
         ("Find a trip by name", get_trip_by_name),
         ("Return to the previous menu", None)]
-    print("--------------------------------------")
-    print(f"You have {Fore.YELLOW}{trip_count}{Fore.RESET} trips logged.")
-    print("--------------------------------------")
-    display_menu(options, "Select from the following trip options:")
+    display_menu(options, "Select from the following trip options:", info_display=2)
 
 """ 
 #trip loop depreciated
@@ -134,7 +140,6 @@ def trip_menu():
 
 
 def activity_menu():
-    activity_count = len(Activity.get_all)
     options = [
         ("List all activities", list_activities),
         ("List activities by trip", list_trip_activities),
@@ -144,10 +149,7 @@ def activity_menu():
         ("Find an activity by name", find_activity_by_name),
         ("Find an activity by category", find_activity_by_category),
         ("Return to previous menu", None)]
-    print("--------------------------------------")
-    print(f"you have {Fore.YELLOW}{activity_count}{Fore.RESET} activities logged.")
-    print("--------------------------------------")
-    display_menu(options, "Select from the following activity options:")
+    display_menu(options, "Select from the following activity options:", info_display=3)
 '''
 #activity loop depreciated
     while True:

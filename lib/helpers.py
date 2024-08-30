@@ -299,7 +299,7 @@ def update_activity(trip_id=None):
                 for idx, category in enumerate(categories):
                     print(f"{idx + 1}. {category}")
                 print(f"Current category: {activity.category}")
-                category_choice = input("Choose a new category for the activity or press Enter to keep the current category: ")
+                category_choice = input("Choose a new category or press Enter to keep the current category: ")
                 if category_choice:
                     try:
                         category_choice = int(category_choice)
@@ -341,6 +341,7 @@ def delete_activity(trip_id=None):
                     print(f'Error deleting {name}: {exc}')
             else:
                 print("Deletion cancelled.")
+                break
         else:
             print(f'{name} was not found.')
 

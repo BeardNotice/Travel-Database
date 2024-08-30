@@ -135,8 +135,10 @@ class Activity:
         """
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
-        del type(self).all[self.id]
-        self.id=None
+        if self.id in type(self).all:
+            del type(self).all[self.id]
+    
+        self.id = None
     
     @classmethod
     def create(cls, name, cost, currency, category, description, trip_id):
