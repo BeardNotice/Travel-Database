@@ -341,7 +341,13 @@ def delete_activity(trip_id=None):
     while True:
         if trip_id:
             trip = Trip.find_by_id(trip_id)
-        name = input(f"Enter the name of the activity to be deleted or {Fore.BLUE}(re)eturn{Fore.RESET} to go back: ")
+            id_confirm = input(f"Are you sure you want to delete '{trip.name}'? (Y/N)").strip().lower()
+            if id_confirm in ("e", "exit"):
+                exit_program()
+            if id_confirm == "y":
+                trip.delete()
+                break
+        name = input(f"TYPE the name of the activity to be deleted or {Fore.BLUE}(re)eturn{Fore.RESET} to go back: ")
         if name in ("e", "exit"):
             exit_program()
         if name in ("re", "return"):
@@ -349,6 +355,8 @@ def delete_activity(trip_id=None):
         activity = Activity.find_by_name(name)
         if activity:
             confirm = input(f"Are you sure you want to Delete '{name}? (Y/N)").strip().lower()
+            if confirm in ("e", "exit"):
+                exit_program()
             if confirm == "y":
                 try:
                     activity.delete()
