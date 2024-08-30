@@ -12,7 +12,9 @@ def manage_trips():
         ("Learn more about an Activity", list_trip_activities),
         ("Add an activity", create_activity),
         ("Update an existing activity", update_activity),
-        ("Delete an activity", delete_activity)
+        ("Delete an activity", delete_activity),
+        ("Update this trip's information", update_trip),
+        ("Delete this trip", delete_trip)
     ]
     
     if not trips:
@@ -23,43 +25,42 @@ def manage_trips():
         return  # Exit if no trips exist after trying to create one
 
     while True:
+        special_trips_updater = [
+            (f"{Fore.LIGHTGREEN_EX}Create{Fore.CYAN} a new trip.", create_trip), 
+            (f"{Fore.BLUE}Update{Fore.CYAN} a trip.", update_trip), 
+            (f"{Fore.RED}Delete{Fore.CYAN} a trip.", delete_trip),
+            (f"{Fore.CYAN}Return to menu.", None)
+            ]
         print("\nTrips:\n")
         for i, trip in enumerate(trips):
             print(f'{Fore.CYAN}{i + 1}. {Fore.MAGENTA}"{trip.name}"{Fore.CYAN} in {trip.location}: {trip.start_date} - {trip.end_date}')
-        print(f"{Fore.CYAN}{len(trips) + 1}. {Fore.LIGHTGREEN_EX}Create{Fore.CYAN} a new trip.", end = "    ")
-        print(f"{Fore.CYAN}{len(trips) + 2}. {Fore.BLUE}Update{Fore.CYAN} a trip.", end = "    ")
-        print(f"{Fore.CYAN}{len(trips) + 3}. {Fore.RED}Delete{Fore.CYAN} a trip.")
-        print(f"{Fore.CYAN}{len(trips) + 4}. Return to menu.")
+        for i, (extra, action) in enumerate(special_trips_updater):
+            print(f"{Fore.CYAN}{i+len(trips)+1}. {extra}")
         print("")
         print("Select a trip to manage its activities.")
         print(f"You can also {Fore.LIGHTGREEN_EX}create{Fore.RESET}, {Fore.BLUE}update{Fore.RESET}, or {Fore.RED}delete{Fore.RESET} trip(s).")
         choice = input(f"Or type {Fore.GREEN}(e)xit{Fore.RESET} at any time to quit: ").strip().lower()
         if choice in ["e", "exit"]:
             exit_program()
-        elif choice == str(len(trips) + 1):
-            create_trip()
-            trips = Trip.get_all()
-            continue
-        elif choice == str(len(trips) + 2):
-            update_trip()
-            trips = Trip.get_all()
-            continue
-        elif choice == str(len(trips) + 3):
-            delete_trip()
-            trips = Trip.get_all()
-            continue
-        elif choice == str(len(trips) + 4):
+        elif int(choice) == len(trips) + len(special_trips_updater):
             break
         else:
             try:
                 choice = int(choice)
                 if 1 <= choice <= len(trips):
+                # If a trip is selected
                     selected_trip = trips[choice - 1]
                     manage_trip_activities(selected_trip, activity_submenu)
+                elif len(trips) < choice <= len(trips) + len(special_trips_updater) - 1:
+                # If a special option (e.g., "Create a new trip") is selected
+                    action = special_trips_updater[choice - len(trips) - 1][1]
+                    if action:
+                            action()    # Call the function associated with the special option
+                    trips = Trip.get_all()
                 else:
-                    print("Invalid choice. Please select a valid option.")
+                    print(f"{Fore.RED}Invalid choice. Please select a valid option.")
             except ValueError:
-                print("Invalid input, please enter a number.")
+                print(f"{Fore.RED}Invalid input, please enter a number.")
 
 def manage_trip_activities(trip, activity_submenu):
     while True:
@@ -117,8 +118,30 @@ def create_trip():
     except ValueError as exc:
         print(f"{Fore.RED}Error: ", exc)
 
-def update_trip():
+def update_trip(trip_id=None):
     while True:
+        if trip_id:
+            updated_trip = Trip.find_by_id(trip_id)
+            try:
+                new_name = input(f"Add a new name for {updated_trip.name} or press Enter to skip: ")
+                if new_name:
+                    updated_trip.name=new_name
+                new_location = input('Add a new location or press Enter to skip: ')
+                if new_location:
+                    updated_trip.location = new_location
+                new_start_date = input("Add a new start date or press Enter to skip: ")
+                if new_start_date:
+                    updated_trip.start_date = new_start_date
+                new_end_date = input("Add new end date or press Enter to skip: ")
+                if new_end_date:
+                    updated_trip.end_date = new_end_date
+                updated_trip.update()
+                print(f'Trip "{updated_trip.name}" updated sucessfully.')
+                break
+            except ValueError as exc:
+                print(f'Error updating: {exc}\n')
+                break
+ 
         trips = Trip.get_all()
         print()
         for i, trip in enumerate(trips):
@@ -158,8 +181,29 @@ def update_trip():
             print(f'{name_} was not found.\n')
             continue
 
-def delete_trip():
+def delete_trip(trip_id = None):
     while True:
+        if trip_id:
+            trip_from_id = Trip.find_by_id(trip_id)
+            confirm = input(f"Are you sure you want to delete {trip_from_id.name}? (Y/N)").strip().lower()
+            if confirm in ("e", "exit"):
+                exit_program()
+            if confirm == "y":
+                try:
+                    activities = Activity.find_by_trip_id(trip_id)
+                    for activity in activities:
+                        activity.delete()
+                    trip_from_id.delete()
+                    print()
+                    print(f"'{trip_from_id.name}' Sucessfully deleted.")
+                    manage_trips()
+                except Exception as exc:
+                    print(f"Error: {exc}")
+                    break
+            else:
+                print()
+                print("Deletion Cancelled.")
+                break
         trips = Trip.get_all()
         print()
         for i, trip in enumerate(trips):
@@ -169,7 +213,7 @@ def delete_trip():
         if len(trips)%2 !=0:
             print()
         print()
-        name = input(f"Enter the name of the trip to be deleted or {Fore.BLUE}(re)eturn{Fore.RESET} to go back: ")
+        name = input(f"TYPE the name of the trip to be deleted or {Fore.BLUE}(re)eturn{Fore.RESET} to go back: ")
         if name in ("e", "exit"):
             exit_program()
         if name in ("re", "return"):
@@ -179,6 +223,9 @@ def delete_trip():
             confirmation = input(f'Are you sure you want to delete "{name}"? (Y/N):').strip().lower()
             if confirmation == "y":
                 try:
+                    removable_activities = Activity.find_by_trip_id(trip.id)
+                    for activity in removable_activities:
+                        activity.delete()
                     trip.delete()
                     print(f'\n{Fore.GREEN}Sucessfully deleted {name}.\n')
                     break
@@ -256,16 +303,21 @@ def create_activity(trip_id=None):
                 print("Invalid trip ID. No such trip exists.")
                 break
 
-
-        name = input("Enter a name for the activity: ")
         try:
-            cost = float(input("Enter a cost for the activity: "))
+            name = input(f"Enter a {Fore.MAGENTA}name{Fore.RESET} for the activity: ")
+        except ValueError as exc:
+            print(f'{Fore.RED}Error: {exc}')
+            break
+        try:
+            cost = float(input(f"Enter a {Fore.GREEN}cost{Fore.RESET} for the activity: "))
         except ValueError:
-            print("Invalid input. Please enter a valid number for the cost.\n")
-            continue
-        
-        currency = input("Enter a currency for the activity: ")
-
+            print(f"{Fore.RED}Invalid input. Please enter a valid number for the cost.\n")
+            break
+        try:
+            currency = input(f"Enter a {Fore.GREEN}currency{Fore.RESET} for the activity: ")
+        except ValueError as exc:
+            print(f'{Fore.RED}Error: {exc}')
+            break
         categories = ["Relaxation", "Photography", "Entertainment", "Cultural", "Culinary", "Adventure", "Sports"]
         while True:
             for idx, category in enumerate(categories):
@@ -275,13 +327,16 @@ def create_activity(trip_id=None):
                 category_choice = int(category_choice)
                 if 1 <= category_choice <= len(categories):
                     category = categories[category_choice - 1]
-                    break
                 else:
                     print("Invalid choice. Please select a valid category number.\n")
+                    break
             except ValueError:
                 print("Invalid input. Please enter a number.\n")
-
-        description = input("Enter a description for the activity: ")
+                break
+        try:
+            description = input("Enter a description for the activity: ")
+        except ValueError:
+            continue
 
         try:
             Activity.create(name, cost, currency.upper(), category, description, trip_id)
@@ -295,8 +350,19 @@ def create_activity(trip_id=None):
 def update_activity(trip_id=None):
     while True:
         if trip_id:
-            trip = Trip.find_by_id(trip_id)
-        name_ = input(f"Enter the name of the activity to update or {Fore.BLUE}(re)eturn{Fore.RESET} to go back: ")
+            trip = Activity.find_by_trip_id(trip_id)
+            print()
+            for i, activity in enumerate(trip):
+                print(f"{i+1}. {activity.name}")
+            selection = input("Select the activity to update:")
+            try:
+                selection = int(selection)
+                if 1<=selection<=len(trip):
+                    name_ = trip[selection - 1].name
+            except ValueError:
+                continue
+        else:
+            name_ = input(f"Enter the name of the activity to update or {Fore.BLUE}(re)eturn{Fore.RESET} to go back: ")
         if name_ in ("e", "exit"):
             exit_program()
         if name_ in ("re", "return"):
@@ -340,12 +406,19 @@ def update_activity(trip_id=None):
 def delete_activity(trip_id=None):
     while True:
         if trip_id:
-            trip = Trip.find_by_id(trip_id)
-            id_confirm = input(f"Are you sure you want to delete '{trip.name}'? (Y/N)").strip().lower()
+            activities_from_trip = Activity.find_by_trip_id(trip_id)
+            for i, activity in enumerate(activities_from_trip):
+                print(f"{i+1}. {activity.name}")
+            print()
+            choice = input("Select the activity to delete: ")
+            choice = int(choice)
+            if 1<=choice<=len(activities_from_trip):
+                activity_to_delete = activities_from_trip[choice - 1]
+            id_confirm = input(f"Are you sure you want to delete '{activity_to_delete.name}'? (Y/N)").strip().lower()
             if id_confirm in ("e", "exit"):
                 exit_program()
             if id_confirm == "y":
-                trip.delete()
+                activity_to_delete.delete()
                 break
         name = input(f"TYPE the name of the activity to be deleted or {Fore.BLUE}(re)eturn{Fore.RESET} to go back: ")
         if name in ("e", "exit"):

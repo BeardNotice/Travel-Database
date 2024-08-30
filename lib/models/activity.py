@@ -62,10 +62,10 @@ class Activity:
         return self._description
     @description.setter
     def description(self, description):
-        if isinstance(description, str):
+        if isinstance(description, str) and len(description):
             self._description = description
         else:
-            raise ValueError("Description must be a string.")
+            raise ValueError("Description must be a non-empty string.")
     
     @property
     def trip_id(self):
