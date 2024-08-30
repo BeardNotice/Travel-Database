@@ -22,7 +22,7 @@ from helpers import (
     )
 init_colorama(autoreset=True)
 
-
+#Fix Bug where Trip and Activity dont update when deleting from manage_trip_activities
 def display_menu(options, prompt="Select from the following options:", is_main_menu=False, info_display=0):
     trip_count = len(Trip.get_all())
     activity_count = len(Activity.get_all())
