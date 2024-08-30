@@ -1,6 +1,7 @@
 # lib/models/trip.py
 
 from models.__init__ import CURSOR, CONN
+from datetime import datetime
 
 class Trip:
     
@@ -38,20 +39,20 @@ class Trip:
         return self._start_date
     @start_date.setter
     def start_date(self, start_date):
-        if isinstance(start_date, str) and len(start_date):
+        if isinstance(start_date, str) and datetime.strptime(start_date, "%m/%d/%Y"):
             self._start_date = start_date
         else:
-            raise ValueError("Start Date must be a non-empty string.")
+            raise ValueError("Start Date must be a non-empty string in the format mm/dd/yyyy.")
         
     @property
     def end_date(self):
         return self._end_date
     @end_date.setter
     def end_date(self, end_date):
-        if isinstance(end_date, str) and len(end_date):
+        if isinstance(end_date, str) and datetime.strptime(end_date, "%m/%d/%Y"):
             self._end_date = end_date
         else:
-            raise ValueError("End Date must be a non-empty string.")
+            raise ValueError("End Date must be a non-empty string in the format mm/dd/yyyy.")
     
 
     @classmethod

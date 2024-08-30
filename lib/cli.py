@@ -102,7 +102,7 @@ def trip_menu():
         ("Find a trip by name", get_trip_by_name),
         ("Return to the previous menu", None)]
     print("--------------------------------------")
-    print(f"You have {trip_count} trips logged.")
+    print(f"You have {Fore.YELLOW}{trip_count}{Fore.RESET} trips logged.")
     print("--------------------------------------")
     display_menu(options, "Select from the following trip options:")
 
@@ -145,7 +145,7 @@ def activity_menu():
         ("Find an activity by category", find_activity_by_category),
         ("Return to previous menu", None)]
     print("--------------------------------------")
-    print(f"you have {activity_count} activities logged.")
+    print(f"you have {Fore.YELLOW}{activity_count}{Fore.RESET} activities logged.")
     print("--------------------------------------")
     display_menu(options, "Select from the following activity options:")
 '''
