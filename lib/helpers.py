@@ -60,12 +60,12 @@ def manage_trip_activities(trip_id=None):
         if not trip:
             break
         activity_submenu = [
-        ("Learn more about an Activity", list_trip_activities),
-        ("Add an activity", create_activity),
-        ("Update an existing activity", update_activity),
-        ("Delete an activity", delete_activity),
-        ("Update this trip's information", update_trip),
-        ("Delete this trip", delete_trip)
+        (f"Learn more about an {Fore.YELLOW}Activity", list_trip_activities),
+        (f"{Fore.GREEN}Add{Fore.CYAN} an activity", create_activity),
+        (f"{Fore.BLUE}Update{Fore.CYAN} an existing activity", update_activity),
+        (f"{Fore.RED}Delete{Fore.CYAN} an activity", delete_activity),
+        (f"{Fore.BLUE}Update{Fore.CYAN} this {Fore.MAGENTA}trip{Fore.CYAN}'s information", update_trip),
+        (f"{Fore.RED}Delete{Fore.CYAN} this {Fore.MAGENTA}trip", delete_trip)
         ]
         activities = Activity.find_by_trip_id(trip.id)
         print(f"\nManaging activities for {Fore.BLUE}'{trip.name}'{Fore.RESET} in {trip.location}: {trip.start_date} - {trip.end_date}")

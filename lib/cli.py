@@ -104,9 +104,9 @@ def menu():
 
 def trip_menu():
     options = [
-        ("Create a trip", create_trip),
-        ("Update a previously created trip", update_trip),
-        ("Delete a trip", delete_trip),
+        (f"{Fore.GREEN}Create{Fore.CYAN} a trip", create_trip),
+        (f"{Fore.BLUE}Update{Fore.CYAN} a previously created trip", update_trip),
+        (f"{Fore.RED}Delete{Fore.CYAN} a trip", delete_trip),
         ("Find a trip by name", get_trip_by_name),
         ("Return to the previous menu", None)]
     display_menu(options, "Select from the following trip options:", info_display=2)
@@ -142,9 +142,9 @@ def activity_menu():
     options = [
         ("List all activities", list_activities),
         ("List activities by trip", list_trip_activities),
-        ("Create an activity", create_activity),
-        ("Update an existing activity", update_activity),
-        ("Delete an activity", delete_activity),
+        (f"{Fore.GREEN}Create{Fore.CYAN} an activity", create_activity),
+        (f"{Fore.BLUE}Update{Fore.CYAN} an existing activity", update_activity),
+        (f"{Fore.RED}Delete{Fore.CYAN} an activity", delete_activity),
         ("Find an activity by name", find_activity_by_name),
         ("Find an activity by category", find_activity_by_category),
         ("Return to previous menu", None)]
