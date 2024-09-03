@@ -8,21 +8,12 @@ init_colorama(autoreset=True)
 
 def manage_trips():
     trips = Trip.get_all()
-    activity_submenu = [
-        ("Learn more about an Activity", list_trip_activities),
-        ("Add an activity", create_activity),
-        ("Update an existing activity", update_activity),
-        ("Delete an activity", delete_activity),
-        ("Update this trip's information", update_trip),
-        ("Delete this trip", delete_trip)
-    ]
     
     if not trips:
         print("No Trips Available.")
         new_trip = input("Create a trip? (Y/N): ").strip().lower()
         if new_trip == "y":
-            create_trip()
-        return  # Exit if no trips exist after trying to create one
+            create_trip() # Exit if no trips exist after trying to create one
 
     while True:
         special_trips_updater = [
@@ -50,7 +41,7 @@ def manage_trips():
                 if 1 <= choice <= len(trips):
                 # If a trip is selected
                     selected_trip = trips[choice - 1]
-                    manage_trip_activities(selected_trip, activity_submenu)
+                    manage_trip_activities(selected_trip)
                 elif len(trips) < choice <= len(trips) + len(special_trips_updater) - 1:
                 # If a special option (e.g., "Create a new trip") is selected
                     action = special_trips_updater[choice - len(trips) - 1][1]
@@ -62,8 +53,17 @@ def manage_trips():
             except ValueError:
                 print(f"{Fore.RED}Invalid input, please enter a number.")
 
-def manage_trip_activities(trip, activity_submenu):
+def manage_trip_activities(trip):
     while True:
+        Trip.get_all()
+        activity_submenu = [
+        ("Learn more about an Activity", list_trip_activities),
+        ("Add an activity", create_activity),
+        ("Update an existing activity", update_activity),
+        ("Delete an activity", delete_activity),
+        ("Update this trip's information", update_trip),
+        ("Delete this trip", delete_trip)
+        ]
         activities = Activity.find_by_trip_id(trip.id)
         print(f"\nManaging activities for {Fore.BLUE}'{trip.name}'{Fore.RESET} in {trip.location}: {trip.start_date} - {trip.end_date}")
         print()
@@ -207,11 +207,7 @@ def delete_trip(trip_id = None):
         trips = Trip.get_all()
         print()
         for i, trip in enumerate(trips):
-            print (f"{i+1}. {trip.name}", end = '  ')
-            if (i+1)%2 == 0:
-                print()
-        if len(trips)%2 !=0:
-            print()
+            print (f"{i+1}. {Fore.MAGENTA}{trip.name}")
         print()
         name = input(f"TYPE the name of the trip to be deleted or {Fore.BLUE}(re)eturn{Fore.RESET} to go back: ")
         if name in ("e", "exit"):
@@ -434,7 +430,7 @@ def delete_activity(trip_id=None):
                 try:
                     activity.delete()
                     print(f'Succesfully deleted {name}.')
-                    break
+                    manage_trips()
                 except ValueError as exc:
                     print(f'Error deleting {name}: {exc}')
             else:
@@ -490,7 +486,7 @@ def list_trip_activities(trip_id=None):
                 print(f"{Fore.RED}Invalid input. Please enter a number.")
 
         else:
-            print("No activities found for the selected criteria.")
+            print("No activities found for the selected criteria.")      
             break
 
 def quick_overview():
