@@ -43,6 +43,8 @@ def display_menu(options, prompt="Select from the following options:", is_main_m
         print(prompt)
         for i, (desc, action) in enumerate(options, 1):
             print(f'{Fore.CYAN}{i}. {desc}')
+            if "delete" in desc.lower():
+                print(f"{Fore.CYAN}--------------------------------------")
         print(f'or type {Fore.GREEN}(e)xit{Fore.RESET} at any time to quit.')
         choice = input("> ").strip().lower()
         if choice in ["exit", "e"]:

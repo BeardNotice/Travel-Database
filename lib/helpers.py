@@ -81,8 +81,12 @@ def manage_trip_activities(trip_id=None):
         if len(activities)%4 != 0:
             print()
         print()
+        spacer_added = False
         for i, (desc, _) in enumerate(activity_submenu, 1):
             print(f"{Fore.CYAN}{i}. {desc}")
+            if "delete" in desc.lower() and not spacer_added:
+                print(f"{Fore.CYAN}--------------------------------------")
+                spacer_added=True
         print(f"{Fore.CYAN}{len(activity_submenu) + 1}. Return to previous menu")
         print()
 
@@ -319,20 +323,19 @@ def create_activity(trip_id=None):
             print(f'{Fore.RED}Error: {exc}')
             break
         categories = ["Relaxation", "Photography", "Entertainment", "Cultural", "Culinary", "Adventure", "Sports"]
-        while True:
-            for idx, category in enumerate(categories):
-                print(f'{idx + 1}. {category}')
-            category_choice = input("Enter the number corresponding to the category: ").strip()
-            try:
-                category_choice = int(category_choice)
-                if 1 <= category_choice <= len(categories):
-                    category = categories[category_choice - 1]
-                else:
-                    print("Invalid choice. Please select a valid category number.\n")
-                    break
-            except ValueError:
-                print("Invalid input. Please enter a number.\n")
-                break
+        for idx, category in enumerate(categories):
+            print(f'{idx + 1}. {category}')
+        category_choice = input("Enter the number corresponding to the category: ").strip()
+        try:
+            category_choice = int(category_choice)
+            if 1 <= category_choice <= len(categories):
+                category = categories[category_choice - 1]
+            else:
+                print("Invalid choice. Please select a valid category number.\n")
+                continue
+        except ValueError:
+            print("Invalid input. Please enter a number.\n")
+            break
         try:
             description = input("Enter a description for the activity: ")
         except ValueError:
