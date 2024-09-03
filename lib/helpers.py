@@ -16,6 +16,7 @@ def manage_trips():
             create_trip() # Exit if no trips exist after trying to create one
 
     while True:
+        trips = Trip.get_all() #refreshes trips INSIDE the loop
         special_trips_updater = [
             (f"{Fore.LIGHTGREEN_EX}Create{Fore.CYAN} a new trip.", create_trip), 
             (f"{Fore.BLUE}Update{Fore.CYAN} a trip.", update_trip), 
@@ -41,7 +42,7 @@ def manage_trips():
                 if 1 <= choice <= len(trips):
                 # If a trip is selected
                     selected_trip = trips[choice - 1]
-                    manage_trip_activities(selected_trip)
+                    manage_trip_activities(selected_trip.id)
                 elif len(trips) < choice <= len(trips) + len(special_trips_updater) - 1:
                 # If a special option (e.g., "Create a new trip") is selected
                     action = special_trips_updater[choice - len(trips) - 1][1]
@@ -53,9 +54,11 @@ def manage_trips():
             except ValueError:
                 print(f"{Fore.RED}Invalid input, please enter a number.")
 
-def manage_trip_activities(trip):
+def manage_trip_activities(trip_id=None):
     while True:
-        Trip.get_all()
+        trip=Trip.find_by_id(trip_id)
+        if not trip:
+            break
         activity_submenu = [
         ("Learn more about an Activity", list_trip_activities),
         ("Add an activity", create_activity),
@@ -196,7 +199,8 @@ def delete_trip(trip_id = None):
                     trip_from_id.delete()
                     print()
                     print(f"'{trip_from_id.name}' Sucessfully deleted.")
-                    manage_trips()
+                    #this is where I'm getting a problem with escaping to manage_trips
+                    break
                 except Exception as exc:
                     print(f"Error: {exc}")
                     break
@@ -430,7 +434,7 @@ def delete_activity(trip_id=None):
                 try:
                     activity.delete()
                     print(f'Succesfully deleted {name}.')
-                    manage_trips()
+                    break
                 except ValueError as exc:
                     print(f'Error deleting {name}: {exc}')
             else:

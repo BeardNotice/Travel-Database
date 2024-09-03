@@ -24,10 +24,10 @@ init_colorama(autoreset=True)
 
 #Fix Bug where Trip and Activity dont update on various screens
 def display_menu(options, prompt="Select from the following options:", is_main_menu=False, info_display=0):
-    trip_count = len(Trip.get_all())
-    activity_count = len(Activity.get_all())
 
     while True:
+        trip_count = len(Trip.get_all())
+        activity_count = len(Activity.get_all())
         if info_display == 1:
             print("==================================")
             print(f"you currently have {Fore.YELLOW}{trip_count}{Fore.RESET} trips and {Fore.YELLOW}{activity_count}{Fore.RESET} activities logged.")
