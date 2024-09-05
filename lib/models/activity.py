@@ -4,7 +4,7 @@ from models.__init__ import CURSOR, CONN
 from models.trip import Trip
 
 class Activity:
-    
+
     all = {}
 
     def __init__(self, name, cost, currency, category, description, trip_id, id=None):
@@ -51,10 +51,10 @@ class Activity:
         return self._category
     @category.setter
     def category(self, category):
-        if isinstance(category, str) and len(category):
+        if isinstance(category, str):
             self._category = category
         else:
-            raise ValueError("Category must be a non-empty string.")
+            raise ValueError("Category must be one of the available categories.")
 
 
     @property

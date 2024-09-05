@@ -264,13 +264,23 @@ def find_activity_by_name():
         print(f'{name} was not found.')
 
 def find_activity_by_category():
-    category = input("Enter the activity's category: ")
-    activities = Activity.find_by_category(category)
-    if activities:
-        for activity in activities:
-            print(f'-"{activity.name}" ({activity.category}):\n     Cost: {activity.cost} {activity.currency}\n     Description: {activity.description}\n')
-    else:
-        print(f'No activities found in category {category}')
+    while True:
+        for i, category in enumerate(activity_categories):
+            print(f'{Fore.CYAN}{i+1}. {category}')
+        category = input("Select a Category: ")
+        category = int(category)
+        if 1 <= category <= len(activity_categories):
+            category = activity_categories[category -1]
+        else:
+            print(f"{Fore.RED}Please select a valad option.")
+            continue
+        activities = Activity.find_by_category(category)
+        if activities:
+            print()
+            for activity in activities:
+                print(f'{Fore.MAGENTA}-"{activity.name}" ({activity.category}):\n     Cost: {activity.cost} {activity.currency}\n     Description: {activity.description}\n')
+        else:
+            print(f'No activities found in category {category}')
 
 def find_activity_by_currency():
     currency = input("Enter the activity's currency: ")
@@ -330,7 +340,7 @@ def create_activity(trip_id=None):
         except ValueError as exc:
             print(f'{Fore.RED}Error: {exc}')
             break
-        categories = ["Relaxation", "Photography", "Entertainment", "Cultural", "Culinary", "Adventure", "Sports"]
+        categories = activity_categories
         for idx, category in enumerate(categories):
             print(f'{idx + 1}. {category}')
         category_choice = input("Enter the number corresponding to the category: ").strip()
@@ -389,7 +399,7 @@ def update_activity(trip_id=None):
                 new_currency = input(f"Enter a new currency or press Enter to keep '{activity.currency}': ")
                 if new_currency:
                     activity.currency = new_currency
-                categories = ["Relaxation", "Photography", "Entertainment", "Cultural", "Culinary", "Adventure", "Sports"]
+                categories = activity_categories
                 for idx, category in enumerate(categories):
                     print(f"{idx + 1}. {category}")
                 print(f"Current category: {activity.category}")
@@ -537,7 +547,7 @@ def create_boxed_text(content):
 
     return '\n'.join(boxed_text)
 
-
+activity_categories = ["Relaxation", "Photography", "Entertainment", "Cultural", "Culinary", "Adventure", "Sports"]
 
 def exit_program():
     print(f"{Fore.GREEN}Goodbye!")
