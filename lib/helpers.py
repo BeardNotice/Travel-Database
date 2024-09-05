@@ -68,7 +68,7 @@ def manage_trip_activities(trip_id=None):
         (f"{Fore.RED}Delete{Fore.CYAN} this {Fore.MAGENTA}trip", delete_trip)
         ]
         activities = Activity.find_by_trip_id(trip.id)
-        print(f"\nManaging activities for {Fore.BLUE}'{trip.name}'{Fore.RESET} in {trip.location}: {trip.start_date} - {trip.end_date}")
+        print(f"\nManaging {Fore.BLUE}'{trip.name}'{Fore.RESET} in {trip.location}: {trip.start_date} - {trip.end_date}")
         print()
         print("Logged Activities:")
         print()
@@ -248,6 +248,14 @@ def list_activities():
     print("==========================")
 
 def find_activity_by_name():
+    all_activities = Activity.get_all()
+    for i, activity in enumerate(all_activities):
+        print(f'{Fore.CYAN}{i+1}. {activity.name}', end='   ')
+        if (i+1) == 4:
+            print()
+    if len(all_activities) != 4:
+        print()
+    print()
     name = input("Enter the activity by the activity's name: ")
     activity = Activity.find_by_name(name)
     if activity:
@@ -493,7 +501,7 @@ def list_trip_activities(trip_id=None):
                 print(f"{Fore.RED}Invalid input. Please enter a number.")
 
         else:
-            print("No activities found for the selected criteria.")      
+            print("No activities found for the selected trip.")      
             break
 
 def quick_overview():
