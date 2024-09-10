@@ -16,7 +16,7 @@ def manage_trips():
             create_trip() # Exit if no trips exist after trying to create one
 
     while True:
-        trips = Trip.get_all() #refreshes trips INSIDE the loop
+        trips = Trip.get_all()
         special_trips_updater = [
             (f"{Fore.LIGHTGREEN_EX}Create{Fore.CYAN} a new trip.", create_trip), 
             (f"{Fore.BLUE}Update{Fore.CYAN} a trip.", update_trip), 
@@ -44,7 +44,6 @@ def manage_trips():
                     selected_trip = trips[choice - 1]
                     manage_trip_activities(selected_trip.id)
                 elif len(trips) < choice <= len(trips) + len(special_trips_updater) - 1:
-                # If a special option (e.g., "Create a new trip") is selected
                     action = special_trips_updater[choice - len(trips) - 1][1]
                     if action:
                             action()    # Call the function associated with the special option
@@ -130,23 +129,23 @@ def update_trip(trip_id=None):
         if trip_id:
             updated_trip = Trip.find_by_id(trip_id)
             try:
-                new_name = input(f"Add a new name for {updated_trip.name} or press Enter to skip: ")
+                new_name = input(f"Add a new {Fore.MAGENTA}name{Fore.RESET} for {Fore.MAGENTA}{updated_trip.name}{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ")
                 if new_name:
                     updated_trip.name=new_name
-                new_location = input('Add a new location or press Enter to skip: ')
+                new_location = input(f'Add a new {Fore.CYAN}location{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ')
                 if new_location:
                     updated_trip.location = new_location
-                new_start_date = input("Add a new start date or press Enter to skip: ")
+                new_start_date = input(f"Add a new {Fore.GREEN}start date{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ")
                 if new_start_date:
                     updated_trip.start_date = new_start_date
-                new_end_date = input("Add new end date or press Enter to skip: ")
+                new_end_date = input(f"Add new {Fore.LIGHTRED_EX}end date{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ")
                 if new_end_date:
                     updated_trip.end_date = new_end_date
                 updated_trip.update()
-                print(f'Trip "{updated_trip.name}" updated sucessfully.')
+                print(f'{Fore.GREEN}Trip "{updated_trip.name}" updated sucessfully.')
                 break
             except ValueError as exc:
-                print(f'Error updating: {exc}\n')
+                print(f'{Fore.RED}Error updating: {exc}\n')
                 break
  
         trips = Trip.get_all()
@@ -165,27 +164,27 @@ def update_trip(trip_id=None):
             break
         if trip := Trip.find_by_name(name_):
             try:
-                new_name = input(f"Add a new name for {name_} or press Enter to skip: ")
+                new_name = input(f"Add a new {Fore.MAGENTA}name{Fore.RESET} for {Fore.MAGENTA}{name_}{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ")
                 if new_name:
                     trip.name=new_name
-                new_location = input('Add a new location or press Enter to skip: ')
+                new_location = input(f'Add a new {Fore.CYAN}location{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ')
                 if new_location:
                     trip.location = new_location
-                new_start_date = input("Add a new start date or press Enter to skip: ")
+                new_start_date = input(f"Add a new {Fore.GREEN}start date{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ")
                 if new_start_date:
                     trip.start_date = new_start_date
-                new_end_date = input("Add new end date or press Enter to skip: ")
+                new_end_date = input(f"Add new {Fore.RED}end date{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ")
                 if new_end_date:
                     trip.end_date = new_end_date
 
                 trip.update()
-                print(f'Trip "{trip.name}" updated sucessfully.')
+                print(f'{Fore.GREEN}Trip "{trip.name}" updated sucessfully.')
                 break
             except ValueError as exc:
-                print(f'Error updating: {exc}\n')
+                print(f'{Fore.RED}Error updating: {exc}\n')
                 break
         else:
-            print(f'{name_} was not found.\n')
+            print(f'{Fore.RED}{name_} was not found.\n')
             continue
 
 def delete_trip(trip_id = None):
@@ -203,7 +202,6 @@ def delete_trip(trip_id = None):
                     trip_from_id.delete()
                     print()
                     print(f"'{trip_from_id.name}' Sucessfully deleted.")
-                    #this is where I'm getting a problem with escaping to manage_trips
                     break
                 except Exception as exc:
                     print(f"Error: {exc}")
@@ -345,7 +343,7 @@ def create_activity(trip_id=None):
         categories = activity_categories
         for idx, category in enumerate(categories):
             print(f'{idx + 1}. {category}')
-        category_choice = input("Enter the number corresponding to the category: ").strip()
+        category_choice = input(f"Enter the number corresponding to the {Fore.BLUE}category for the activity: ").strip()
         try:
             category_choice = int(category_choice)
             if 1 <= category_choice <= len(categories):
@@ -357,7 +355,7 @@ def create_activity(trip_id=None):
             print("Invalid input. Please enter a number.\n")
             break
         try:
-            description = input("Enter a description for the activity: ")
+            description = input(f"Enter a {Fore.LIGHTCYAN_EX}description{Fore.RESET} for the activity: ")
         except ValueError:
             continue
 
@@ -376,8 +374,10 @@ def update_activity(trip_id=None):
             trip = Activity.find_by_trip_id(trip_id)
             print()
             for i, activity in enumerate(trip):
-                print(f"{i+1}. {activity.name}")
-            selection = input("Select the activity to update:")
+                print(f"{i+1}. {Fore.YELLOW}{activity.name}")
+            selection = input(f"Select the activity to update or {Fore.BLUE}(re)turn{Fore.RESET} to previous menu:")
+            if selection in ("re", "return"):
+                break
             try:
                 selection = int(selection)
                 if 1<=selection<=len(trip):
@@ -392,20 +392,23 @@ def update_activity(trip_id=None):
             break
         if activity:= Activity.find_by_name(name_):
             try:
-                new_name = input(f"Enter a new name for '{name_}' or press Enter to keep '{activity.name}': ")
+                new_name = input(f"Enter a new {Fore.MAGENTA}name{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to keep {Fore.YELLOW}'{activity.name}'{Fore.RESET}: ")
                 if new_name:
                     activity.name = new_name
-                new_cost = input(f"Enter a new cost or press Enter to keep '{activity.cost}': ")
+                new_cost = input(f"Enter a new {Fore.GREEN}cost{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to keep {Fore.GREEN}'{activity.cost}'{Fore.RESET}: ")
                 if new_cost:
-                    activity.cost = new_cost
-                new_currency = input(f"Enter a new currency or press Enter to keep '{activity.currency}': ")
+                    activity.cost = int(new_cost)
+                new_currency = input(f"Enter a new {Fore.GREEN}currency{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to keep {Fore.GREEN}'{activity.currency}'{Fore.RESET}: ").upper()
                 if new_currency:
                     activity.currency = new_currency
                 categories = activity_categories
+                print()
                 for idx, category in enumerate(categories):
-                    print(f"{idx + 1}. {category}")
-                print(f"Current category: {activity.category}")
-                category_choice = input("Choose a new category or press Enter to keep the current category: ")
+                    print(f"{idx + 1}. {Fore.BLUE}{category}")
+                print()
+                print(f"Current category: {Fore.BLUE}{activity.category}{Fore.RESET}")
+                print()
+                category_choice = input(f"Choose a new {Fore.BLUE}category{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to keep the current category: ")
                 if category_choice:
                     try:
                         category_choice = int(category_choice)
@@ -415,7 +418,8 @@ def update_activity(trip_id=None):
                             print("Invalid choice. Keeping the current category.")
                     except ValueError:
                         print("Invalid input. Keeping the current category.")
-                new_description = input(f"Add a new description or press Enter to keep the current description:\n'{activity.description}'\n> ")
+                        continue
+                new_description = input(f"Add a new {Fore.LIGHTCYAN_EX}description{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to keep the current description:\n{Fore.LIGHTCYAN_EX}'{activity.description}'{Fore.RESET}\n> ")
                 if new_description:
                     activity.description = new_description
                 activity.update()
@@ -431,7 +435,7 @@ def delete_activity(trip_id=None):
         if trip_id:
             activities_from_trip = Activity.find_by_trip_id(trip_id)
             for i, activity in enumerate(activities_from_trip):
-                print(f"{i+1}. {activity.name}")
+                print(f"{i+1}. {Fore.YELLOW}{activity.name}")
             print()
             choice = input("Select the activity to delete: ")
             choice = int(choice)
