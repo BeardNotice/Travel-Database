@@ -177,7 +177,7 @@ def delete_trip(trip_id = None):
     while True:
         if trip_id:
             trip_from_id = Trip.find_by_id(trip_id)
-            confirm = input(f"Are you sure you want to delete {trip_from_id.name}? (Y/N)").strip().lower()
+            confirm = input(f"{Fore.LIGHTRED_EX}Are you sure you want to delete {trip_from_id.name}? (Y/N): ").strip().lower()
             if confirm in ("e", "exit"):
                 exit_program()
             if confirm == "y":
@@ -187,28 +187,28 @@ def delete_trip(trip_id = None):
                         activity.delete()
                     trip_from_id.delete()
                     print()
-                    print(f"'{trip_from_id.name}' Sucessfully deleted.")
+                    print(f"{Fore.GREEN}'{trip_from_id.name}' Sucessfully deleted.")
                     break
                 except Exception as exc:
                     print(f"Error: {exc}")
                     break
             else:
                 print()
-                print("Deletion Cancelled.")
+                print(f"{Fore.RED}Deletion Cancelled.")
                 break
         trips = Trip.get_all()
         print()
         for i, trip in enumerate(trips):
             print (f"{i+1}. {Fore.MAGENTA}{trip.name}")
         print()
-        name = input(f"TYPE the name of the trip to be deleted or {Fore.BLUE}(re)eturn{Fore.RESET} to go back: ")
+        name = input(f"{Fore.LIGHTRED_EX}TYPE{Fore.RESET} the name of the trip to be deleted or {Fore.BLUE}(re)eturn{Fore.RESET} to go back: ")
         if name in ("e", "exit"):
             exit_program()
         if name in ("re", "return"):
             break
         trip = Trip.find_by_name(name)
         if trip:
-            confirmation = input(f'Are you sure you want to delete "{name}"? (Y/N):').strip().lower()
+            confirmation = input(f'{Fore.LIGHTRED_EX}Are you sure you want to delete "{name}"? (Y/N): ').strip().lower()
             if confirmation == "y":
                 try:
                     removable_activities = Activity.find_by_trip_id(trip.id)

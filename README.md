@@ -1,5 +1,5 @@
 
-# Trip and Activity Logger CLI
+# Travel Database CLI
 
 This Python command-line interface (CLI) application allows users to log and manage trips and their associated activities. The application is centered around two primary models, `Trip` and `Activity`, which are related in a one-to-many relationship. Users can perform CRUD (Create, Read, Update, Delete) operations on both trips and activities, with the `manage_trips()` function serving as the central hub for navigation.
 
