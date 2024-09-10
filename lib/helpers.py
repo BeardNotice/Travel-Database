@@ -114,10 +114,10 @@ def get_trip_by_name():
 
 def create_trip():
     
-    name = input("Enter a name for the trip: ")
-    location = input("Add a location for the trip: ")
-    start_date = input("Add the start date: ")
-    end_date = input("Add the end date: ")
+    name = input(f"Enter a {Fore.MAGENTA}name{Fore.RESET} for the trip: ")
+    location = input(f"Add a {Fore.CYAN}location{Fore.RESET} for the trip: ")
+    start_date = input(f"Add the {Fore.GREEN}start date{Fore.RESET}: ")
+    end_date = input(f"Add the {Fore.RED}end date{Fore.RESET}: ")
     try:
         Trip.create(name, location, start_date, end_date)
         print(f'{Fore.GREEN}Sucessfully created {name}')
@@ -127,41 +127,27 @@ def create_trip():
 def update_trip(trip_id=None):
     while True:
         if trip_id:
-            updated_trip = Trip.find_by_id(trip_id)
-            try:
-                new_name = input(f"Add a new {Fore.MAGENTA}name{Fore.RESET} for {Fore.MAGENTA}{updated_trip.name}{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ")
-                if new_name:
-                    updated_trip.name=new_name
-                new_location = input(f'Add a new {Fore.CYAN}location{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ')
-                if new_location:
-                    updated_trip.location = new_location
-                new_start_date = input(f"Add a new {Fore.GREEN}start date{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ")
-                if new_start_date:
-                    updated_trip.start_date = new_start_date
-                new_end_date = input(f"Add new {Fore.LIGHTRED_EX}end date{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ")
-                if new_end_date:
-                    updated_trip.end_date = new_end_date
-                updated_trip.update()
-                print(f'{Fore.GREEN}Trip "{updated_trip.name}" updated sucessfully.')
-                break
-            except ValueError as exc:
-                print(f'{Fore.RED}Error updating: {exc}\n')
-                break
- 
-        trips = Trip.get_all()
-        print()
-        for i, trip in enumerate(trips):
-            print (f"{Fore.CYAN}{i+1}. {trip.name}", end = '    ')
-            if (i+1)%4 == 0:
-                print()
-        if len(trips)%4 !=0:
+            name_ = Trip.find_by_id(trip_id).name
+        else:
+            trips = Trip.get_all()
             print()
-        print()
-        name_ = input(f"Enter the name of the trip to update or {Fore.BLUE}(re)eturn{Fore.RESET} to go back: ")
-        if name_ in ("e", "exit"):
-            exit_program()
-        if name_ in ("re", "return"):
-            break
+            for i, trip in enumerate(trips):
+                print (f"{Fore.CYAN}{i+1}. {trip.name}", end = '    ')
+                if (i+1)%4 == 0:
+                    print()
+            if len(trips)%4 !=0:
+                print()
+            print()
+            choice = input(f"Select trip to update or {Fore.BLUE}(re)eturn{Fore.RESET} to go back: ")
+            if choice in ("e", "exit"):
+                exit_program()
+            if choice in ("re", "return"):
+                break
+            choice = int(choice)
+            if 1<=choice<=len(trips):
+                name_ = trips[choice-1].name
+            else:
+                print(f"{Fore.RED}Please select a valid choice.")
         if trip := Trip.find_by_name(name_):
             try:
                 new_name = input(f"Add a new {Fore.MAGENTA}name{Fore.RESET} for {Fore.MAGENTA}{name_}{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ")
