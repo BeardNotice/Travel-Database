@@ -267,7 +267,9 @@ def find_activity_by_category():
     while True:
         for i, category in enumerate(activity_categories):
             print(f'{Fore.CYAN}{i+1}. {category}')
-        category = input("Select a Category: ")
+        category = input(f"Select a Category or {Fore.BLUE}(re)turn{Fore.RESET} to previous menu: ")
+        if category in ("re", "return"):
+            break
         category = int(category)
         if 1 <= category <= len(activity_categories):
             category = activity_categories[category -1]
