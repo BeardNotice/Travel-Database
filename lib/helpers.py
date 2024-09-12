@@ -513,8 +513,8 @@ def quick_overview():
         print(create_boxed_text("No trips found."))
         return
     output = []
-    for trip in trips:
-        output.append(f'-{trip.name} in {trip.location}\n')
+    for i, trip in enumerate(trips):
+        output.append(f'\n-{trip.name} in {trip.location}\n')
         activities = Activity.find_by_trip_id(trip.id)
         output.append("  Activities:")
         if activities:
@@ -523,7 +523,8 @@ def quick_overview():
         else:
             output.append("     -No activities found.")
         output.append("")
-        output.append("-" * 40)
+        if i < len(trips)-1:
+            output.append("-" * 40)
     boxed_output = create_boxed_text('\n'.join(output))
     print(boxed_output)
 
