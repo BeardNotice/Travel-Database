@@ -139,6 +139,9 @@ def update_trip(selected_trip=None):
                     print()
             if len(trips)%4 !=0:
                 print()
+            if len(trips)<1:
+                print(f"{Fore.RED}No trips to display!")
+                break
             print()
             choice = input(f"Select trip to update or {Fore.BLUE}(re)eturn{Fore.RESET} to go back: ")
             if choice in ("e", "exit"):
@@ -149,7 +152,8 @@ def update_trip(selected_trip=None):
             if 1<=choice<=len(trips):
                 trip = trips[choice-1]
             else:
-                print(f"{Fore.RED}Please select a valid choice.")
+                print(f"{Fore.RED}Error! Error!.")
+                continue
         if trip:
             try:
                 new_name = input(f"Add a new {Fore.MAGENTA}name{Fore.RESET} for {Fore.MAGENTA}{trip.name}{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ")
@@ -172,7 +176,7 @@ def update_trip(selected_trip=None):
                 print(f'{Fore.RED}Error updating: {exc}\n')
                 break
         else:
-            print(f'{Fore.RED}{name_} was not found.\n')
+            print(f'{Fore.RED}{trip.name} was not found.\n')
             continue
 
 def delete_trip(selected_trip = None):
