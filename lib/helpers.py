@@ -152,8 +152,7 @@ def update_trip(selected_trip=None):
             if 1<=choice<=len(trips):
                 trip = trips[choice-1]
             else:
-                print(f"{Fore.RED}Error! Error!.")
-                continue
+                raise Exception("Task failed sucessfully.")
         if trip:
             try:
                 new_name = input(f"Add a new {Fore.MAGENTA}name{Fore.RESET} for {Fore.MAGENTA}{trip.name}{Fore.RESET} or press {Fore.LIGHTGREEN_EX}Enter{Fore.RESET} to skip: ")

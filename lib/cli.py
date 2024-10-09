@@ -72,8 +72,10 @@ def main():
     print(f"Welcome to {Style.BRIGHT}your{Style.RESET_ALL} Travel Database!")
     display_menu(options, is_main_menu = True, info_display=1)
 
-'''
+
+
 #main loop initial version, depreciated
+'''
     while True:
         menu()
         choice = input("> ")
@@ -86,7 +88,6 @@ def main():
         else:
             print(Fore.RED + "Invalid choice")
 '''
-
 '''
 def menu():
         print("----------------------------------")
@@ -110,8 +111,10 @@ def trip_menu():
         ("Return to the previous menu", None)]
     display_menu(options, "Select from the following trip options:", info_display=2)
 
-""" 
+
+
 #trip loop depreciated
+"""
     while True:
         print('Select from the following trip options:')
         for i, (desc, _) in enumerate(options, 1):
@@ -148,8 +151,10 @@ def activity_menu():
         ("Find an activity by category", find_activity_by_category),
         ("Return to previous menu", None)]
     display_menu(options, "Select from the following activity options:", info_display=3)
-'''
+
+
 #activity loop depreciated
+'''
     while True:
         print('Select from the following activity options: ')
         for i, (desc, _) in enumerate(options, 1):
